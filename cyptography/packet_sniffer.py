@@ -1,30 +1,36 @@
+
+# Network Packet Sniffer
+#work on  this file tomorrow.. I need to understand it better.
+
+
 import scapy.all as scapy
 from scapy.layers.inet import IP, TCP, UDP, ICMP
 import argparse
 import sys
 
 def analyze_packet(packet):
+    """Analyze and display packet information"""
     
-    # Check if packet has IP layer
+    #Check if packet has IP layer
     if IP in packet:
         ip_src = packet[IP].src
         ip_dst = packet[IP].dst
         protocol = packet[IP].proto
         
-        # Determine protocol name
+        #Determine protocol name
         protocol_map = {1: 'ICMP', 6: 'TCP', 17: 'UDP'}
         protocol_name = protocol_map.get(protocol, f"Unknown({protocol})")
         
-        # Print basic IP information
+        #Print basic IP information
         print(f"\n[+] {ip_src} -> {ip_dst} | Protocol: {protocol_name}")
         
-        # Analyze transport layer protocols
+        #Analyze transport layer protocols
         if TCP in packet:
             src_port = packet[TCP].sport
             dst_port = packet[TCP].dport
             print(f"    TCP Port {src_port} -> {dst_port}")
             
-            # Display payload if exists
+            #Display payload if exists
             if packet[TCP].payload:
                 payload = bytes(packet[TCP].payload)
                 if payload:
@@ -46,6 +52,7 @@ def analyze_packet(packet):
             print(f"    ICMP Type: {icmp_type}")
 
 def start_sniffer(interface=None, count=0):
+    """Start packet capturing"""
     print("[*] Starting packet sniffer...")
     if interface:
         print(f"[*] Listening on interface: {interface}")
