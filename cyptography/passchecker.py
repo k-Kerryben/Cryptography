@@ -2,7 +2,9 @@ import re
 import getpass
 
 def pass_check(password):
+    #create a score line that we can use to evaluate the strength of the password
     score = 0
+    #create a list the we can add the feedbacks into
     feedback = []
 
     if len(password) >= 8:
@@ -25,7 +27,7 @@ def pass_check(password):
         score += 1  
     else:
         feedback.append("Password should include at least one special character.")
-        
+     # Check for common patterns   
     common_patterns = [
         r'(.)\1{2,}',
         r'(123|234|345|456|567|678|789|890)',
@@ -33,14 +35,14 @@ def pass_check(password):
         r'(qwerty|asdfgh|zxcvbn)',
         r'(password|letmein|welcome|admin|user|login)',
     ]
-
+    
     pattern_found = any(re.search(pattern, password, re.IGNORECASE) 
     for pattern in common_patterns)
     if pattern_found:
         feedback.append("Password contains common patterns or sequences.")
     else:
         score += 1  
- 
+    # Determine strength based on score
     if score == 5:
         strength = "Strong"
     elif score >= 3:
@@ -49,7 +51,7 @@ def pass_check(password):
         strength = "Weak"   
     return strength, feedback
 
-
+# cature password input securely using the getpass module
 def main():
     passwd = getpass.getpass("Enter password: ")
     strength, feedback = pass_check(passwd)
@@ -58,6 +60,10 @@ def main():
         print("Feedback:")
         for f in feedback:
             print("-", f)
-
+# Run the main function to start the program
 if __name__ == "__main__":
     main()
+    
+    #I've never done something this impressive before.
+    #I feel accomplished and proud of my work.
+    #try adding it to a GUI next?
