@@ -1,78 +1,101 @@
-#Password Strength Checker
+# Password Strength Checker (with entropy analysis)
 
-import re #regular expressions for pattern matching
-import getpass #secure password input
+import re
+import math
+import getpass
+
+def calculate_entropy(password):
+    """Calculate theoretical password entropy based on character set size."""
+    charset = 0
+    if re.search(r'[a-z]', password): charset += 26
+    if re.search(r'[A-Z]', password): charset += 26
+    if re.search(r'\d', password): charset += 10
+    if re.search(r'[!@#$%^&*(),.?":{}|<>]', password): charset += 32
+
+    if charset == 0:
+        return 0  # avoid math domain error if password is empty or invalid
+   
+    # check for the entropy of the password
+    entropy = len(password) * math.log2(charset)
+    return round(entropy, 2)
+
 
 def pass_check(password):
-    #create a score line that we can use to evaluate the strength of the password
+    
     score = 0
-    #create a list the we can add the feedbacks into
     feedback = []
 
+    # Basic rules
     if len(password) >= 8:
-        score += 1  
+        score += 1
     else:
         feedback.append("Password should be at least 8 characters long.")
-        #check for digits
+
     if re.search(r"\d", password):
-        score += 1 
+        score += 1
     else:
-        feedback.append("A password should include at least one digit.")
+        feedback.append("Include at least one digit.")
+
     if re.search(r"[A-Z]", password):
-        score += 1  
+        score += 1
     else:
-        feedback.append("A password should include at least one uppercase letter.")
+        feedback.append("Include at least one uppercase letter.")
+
     if re.search(r"[a-z]", password):
         score += 1
     else:
-        feedback.append("A password should include at least one lowercase letter.")
-        
+        feedback.append("Include at least one lowercase letter.")
+
     if re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
-        score += 1  
+        score += 1
     else:
-        feedback.append("A password should include at least one special character.")
-    
-     # Check for common patterns   
+        feedback.append("Include at least one special character.")
+
+    # Common pattern detection
     common_patterns = [
-        #abc #aaaa
-        r'(.)\1{2,}', #three or more repeated characters
+        r'(.)\1{2,}',
         r'(123|234|345|456|567|678|789|890)',
         r'(abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)',
         r'(qwerty|asdfgh|zxcvbn)',
         r'(password|letmein|welcome|admin|user|login)',
     ]
-    # searching for any pattern in the password ingoring the case (e.g RrRr) if it matches any pattern in the common_patterns list
-    pattern_found = any(re.search(pattern, password, re.IGNORECASE)  for pattern in common_patterns)
+    pattern_found = any(re.search(p, password, re.IGNORECASE) for p in common_patterns)
     if pattern_found:
         feedback.append("Your password contains common patterns or sequences.")
     else:
-        score += 1  
-    # Determine strength based on score
-    if score == 6:
-        strength = "Strong"
-    elif score >= 3:
-        strength = "Medium"
-    else:
-        strength = "Weak"   
-    return strength, feedback
+        score += 1
 
-# cature password input securely using the getpass module
+    # Entropy calculation
+    entropy = calculate_entropy(password)
+    # if entropy < 28:
+    #     strength = 
+    # elif entropy < 36:
+    #     strength = 
+    # else:
+    #     strength = 
+
+    # Combine both metrics (optional)
+    # For a more accurate overall rating, we can balance score + entropy:
+    if score <= 3 and entropy < 28:
+        strength = "Weak password, consider increasing complexity."
+    elif score >= 5 and 28 <= entropy < 36:
+        strength = "Medium, you can do better!"
+    elif score >= 6 and entropy >= 36:
+        strength = "Strong, good job!" 
+
+    return strength, feedback, entropy
 def main():
-    # passwd = input("Enter password: ")---->> this wouldn't be a safe way to capture passwords
     passwd = getpass.getpass("Enter password: ")
-    # here we're initialising two variables at the same time because we want to call a single function
-    # you can initialise them individually and call the function twice but we are trying to reduce redundancy
-    strength, feedback = pass_check(passwd)
-    
-    print("Your password is ", strength)
+    strength, feedback, entropy = pass_check(passwd)
+
+    print(f"\nPassword Strength: {strength}")
+    print(f"Entropy: {entropy} bits")
+
     if feedback:
-        print("What you should know:")
+        print("\nSuggestions:")
         for f in feedback:
-            print("-", f)
-# Run the main function to start the program
+            print(f"- {f}")
+
+
 if __name__ == "__main__":
     main()
-    
-    #It's been a while since I wrote some serious code.
-    #I feel accomplished and proud of my work.
-    #try adding it to a GUI next?
