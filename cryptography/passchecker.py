@@ -78,14 +78,14 @@ def pass_check(password):
     # For a more accurate overall rating, we can balance score + entropy:
     if score <= 3 and entropy < 28:
         strength = "Weak password, consider increasing complexity."
-    elif score >= 5 and 28 <= entropy < 36:
+    elif score <= 5 and 28 <= entropy < 36:
         strength = "Medium, you can do better!"
-    elif score >= 6 and entropy >= 36:
+    else:
         strength = "Strong, good job!" 
 
     return strength, feedback, entropy
 def main():
-    passwd = getpass.getpass("Enter password: ")
+    passwd = getpass.getpass("Enter your password to check its strength: ")
     strength, feedback, entropy = pass_check(passwd)
 
     print(f"\nPassword Strength: {strength}")
