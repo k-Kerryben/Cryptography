@@ -74,7 +74,7 @@ def pass_check(password):
     # else:
     #     strength = 
 
-    # Combine both metrics (optional)
+    # Combine both metrics 
     # For a more accurate overall rating, we can balance score + entropy:
     if score <= 3 and entropy < 28:
         strength = "Weak password, consider increasing complexity."
