@@ -34,6 +34,8 @@ if __name__ == "__main__":
         listener.join()  # Ensures proper cleanup when stopped
     except KeyboardInterrupt:
         print("Keylogger interrupted.")
+        
+        
 
 # import threading
 #if this works I'm gonna be the happiest man on earth
