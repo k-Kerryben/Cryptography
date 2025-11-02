@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox
 from PIL import Image # Pillow library for image handling
 import numpy as np
 
-#pip install tk numpy pillow
+# pip install tk numpy pillow
 
 def select_image():
     global image_path
@@ -15,7 +15,7 @@ def select_image():
         label.config(text=f"Selected: {image_path}")
     else:
         label.config(text="No image selected")
-
+        
 def xor_encrypt_image(encrypt=True):
     global image_path
     try:
@@ -23,7 +23,7 @@ def xor_encrypt_image(encrypt=True):
     except ValueError:
         messagebox.showerror("Error", "Please enter a valid integer key!")
         return
-    
+    # pixelvalue = 200^55 ==> encrypted pixel value = 143
     #choice = messagebox.askquestion("Encrypt or Decrypt", "Do you want to Encrypt the image? (No will Decrypt)")
     if not image_path:
         messagebox.showerror("Error", "Please select an image first!")
@@ -56,18 +56,18 @@ def restart_program():
     image_path = None
     label.config(text="No image selected")
     key_entry.delete(0, END)
-    messagebox.showinfo("Info", "Program restarted!")
+    # messagebox.showinfo("Info", "Program restarted!")
 
 window = Tk() # Create the main window
 window.title("Image XOR Encryption") 
-window.geometry("450x350")
+window.geometry("400x300")
 
 image_path = None # eg C:\path\to\image.png
 
 label = Label(window, text="No image selected", wraplength=400)
 label.pack(pady=20)
 
-key_label = Label(window, text="Enter XOR Key (integer):")
+key_label = Label(window, text="Enter XOR Key (0-255):")
 key_label.pack() 
    
 key_entry = Entry(window)
